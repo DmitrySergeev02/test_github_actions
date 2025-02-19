@@ -28,7 +28,7 @@ jobs:
             "Введение в анализ данных/Вариант 3/test"
           )
 
-          ALL_PATHS=$(find train -type d)
+          ALL_PATHS=$(find . -type d)
 
           for path in $ALL_PATHS; do
             echo "$path"
