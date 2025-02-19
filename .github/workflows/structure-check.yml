@@ -1,0 +1,47 @@
+name: Check File Structure for Allowed Names Only
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-file-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check for disallowed directories or files
+        run: |
+          # Допустимые пути
+          ALLOWED_PATHS=(
+            "train"
+            "Парадигмы программирования"
+            "Парадигмы программирования/Вариант 1"
+            "Парадигмы программирования/Вариант 1/task"
+            "Парадигмы программирования/Вариант 1/test"
+            "Парадигмы программирования/Вариант 2"
+            "Парадигмы программирования/Вариант 2/task"
+            "Парадигмы программирования/Вариант 2/test"
+            "Введение в анализ данных"
+            "Введение в анализ данных/Вариант 1"
+            "Введение в анализ данных/Вариант 1/task"
+            "Введение в анализ данных/Вариант 1/test"
+            "Введение в анализ данных/Вариант 2"
+            "Введение в анализ данных/Вариант 2/task"
+            "Введение в анализ данных/Вариант 2/test"
+            "Введение в анализ данных/Вариант 3"
+            "Введение в анализ данных/Вариант 3/task"
+            "Введение в анализ данных/Вариант 3/test"
+          )
+
+          ALL_PATHS=$(find train -type d)
+
+          for path in $ALL_PATHS; do
+            if [[ ! " ${ALLOWED_PATHS[@]} " =~ " $path " ]]; then
+              echo "Error: Disallowed directory or file found: '$path'"
+              exit 1
+            fi
+          done
+
+          echo "All directories and files are valid."
