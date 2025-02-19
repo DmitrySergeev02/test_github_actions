@@ -17,7 +17,7 @@ jobs:
           fi
 
           if [[ ! $BRANCH_NAME =~ ^(bug|task|documentation|test)-[0-9]+-([a-z0-9-]+)$ ]]; then
-            echo "Error: Branch name '$BRANCH_NAME' does not match the pattern 'task_name-number-sometext'"
+            echo "Error: Branch name '$BRANCH_NAME' does not match the pattern 'task_type-number-description'"
             echo "Pattern must be one of: bug, task, documentation, test, followed by a number and a text separated by dashes."
             exit 1
           fi
