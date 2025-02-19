@@ -21,3 +21,10 @@ jobs:
             echo "Pattern must be one of: bug, task, documentation, test, followed by a number and a text separated by dashes."
             exit 1
           fi
+          
+      - name: Add label if check fails
+        if: failure() 
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "invalid"
