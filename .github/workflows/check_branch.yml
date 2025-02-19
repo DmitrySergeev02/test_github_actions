@@ -1,13 +1,34 @@
-name: Check File Structure for Allowed Names Only
+name: Check Branch Name And File Structure
 
 on:
   pull_request:
     types: [opened, edited, synchronize]
 
 jobs:
-  check-file-structure:
+  check-branch:
     runs-on: ubuntu-latest
     steps:
+      - name: Check branch name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == "dev" || "$BRANCH_NAME" == "reports" ]]; then
+            echo "Skipping branch name check for '$BRANCH_NAME'"
+            exit 0
+          fi
+
+          if [[ ! $BRANCH_NAME =~ ^(bug|task|documentation|test)-[0-9]+-([a-z0-9-]+)$ ]]; then
+            echo "Error: Branch name '$BRANCH_NAME' does not match the pattern 'task_type-number-description'"
+            echo "Pattern must be one of: bug, task, documentation, test, followed by a number and a text separated by dashes."
+            exit 1
+          fi
+          
+      - name: Add label if check fails
+        if: failure() 
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "invalid"
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -46,9 +67,17 @@ jobs:
           done
 
           echo "All directories and files are valid."
+
       - name: Add label if check fails
         if: failure() 
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "invalid"
+
+      - name: Remove label if check succeeds
+        if: success()
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "invalid-structure"
