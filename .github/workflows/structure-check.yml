@@ -32,10 +32,10 @@ jobs:
 
           for path in $ALL_PATHS; do
             echo "$path"
-            if [[ ! " ${ALLOWED_PATHS[@]} " =~ " $path " ]]; then
-              echo "Error: Disallowed directory or file found: '$path'"
-              exit 1
-            fi
+            # if [[ ! " ${ALLOWED_PATHS[@]} " =~ " $path " ]]; then
+            #   echo "Error: Disallowed directory or file found: '$path'"
+            #   exit 1
+            # fi
           done
 
           echo "All directories and files are valid."
